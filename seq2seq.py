@@ -31,31 +31,40 @@ iteration=20
 
 #/Making the dictionary of source sentences and target sentences
 #and change the sentence to the series of corresponding numbers
-f1=open("/home/yoichi-e/corpus/ali_source.txt","r")
-f2=open("/home/yoichi-e/corpus/ali_target.txt","r")
-
+f1=open("/home/yoichi-e/Deepl/data/sample_source.txt","r")
+f2=open("/home/yoichi-e/Deepl/data/sample_target.txt","r")
+f3=open("result.txt","w")
+f4=open("/home/yoichi-e/Deepl/data/sample_test.txt","r")
 
 wd_s={}
 wd_t={}
 source=[]
 target=[]
+test = []
+d_for_test={}
+
+def stt1(x,y):
+	for line in x:
+		print line
+		line=line.split(" ")
+		y.append(line)
+stt(f1,source)
+stt(f2,target)
+stt(f4,test)
 
 
-for line in f1:
-    print line
-    line=line.split(" ")
-    source.append(line)
-for line in f2:
-    print line
-    line=line.split(" ")
-    target.append(line)
+x=3
 
 
-x=2
+for i in range(0,len(test)):
+    print i
+    for j in range(0,len(test[i])):
+        d_for_test[test[i][j].strip()]=-1
 for i in range(0,len(source)):
     print i
     for j in range(0,len(source[i])):
         wd_s[source[i][j].strip()]=-1
+        d_for_test[source[i][j].strip()]=1
 for i in range(0,len(target)):
     print i
     for j in range(0,len(target[i])):
@@ -64,6 +73,7 @@ for i in range(0,len(target)):
 
 source_num=[]
 target_num=[]
+test_num=[]
 n2w_s={}
 n2w_t={}
 for i in range(0,len(source)):
@@ -92,11 +102,24 @@ for i in range(0,len(target)):
     target_num.append(sentence)
     print sentence
 
+
+
+for i in range(0,len(test)):
+    print i
+    sentence=[]
+    for j in range(0,len(test[i])):
+        if d_for_test[test[i][j].strip()] == -1:
+            sentence.append(2)
+        else:
+            sentence.append(wd_s[test[i][j].strip()])
+    test_num.append(sentence)
+    print sentence
+
 n2w_s[0]="start"
 n2w_t[0]="start"
 n2w_s[1]="end"
 n2w_t[1]="emd"
-
+n2w_s[2]="unk"
 
 print "vocab_source=",x
 print "target_num=",y
@@ -306,7 +329,6 @@ class encdec(object):
 
 p=Param(n,dh,nd,Kx,Ky,l)
 en=encdec(p)
-f3=open("result.txt","w")
 
 
 
@@ -318,11 +340,11 @@ for itr in range(0,iteration):
             print target_num[i]
             print en.pred(source_num[i],1,0)
 
+#test
 
-
-for i in range(0,len(source)):
+for i in range(0,len(test)):
     print i
-    tar=en.pred(source_num[i],1,0)
+    tar=en.pred(test_num[i],1,0)
     print tar
     for j in range(0,len(tar[0])):
         print n2w_t[tar[0][j][0]]
@@ -331,4 +353,16 @@ for i in range(0,len(source)):
     f3.write("\n")    
 f1.close()
 f2.close()
-f3.close()   
+f3.close()
+f4.close()
+
+
+
+
+
+
+
+
+    
+
+
